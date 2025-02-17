@@ -1,0 +1,98 @@
+.container {
+  max-width: 90%;
+  margin: auto;
+  text-align: center;
+}
+
+.filter-icon-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: max-content;
+  padding: 8px 12px;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  color: #007bff;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.filter-icon-container:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.filter-icon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.filter-text {
+  font-size: 16px;
+}
+
+.table-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.data-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+/* Filter Input Box */
+.filter-input {
+  width: 90%;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Pagination Styling */
+.pagination-controls {
+  margin-top: 10px;
+}
+
+.pagination-button {
+  margin: 5px;
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  background-color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pagination-button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.loading {
+  font-size: 18px;
+  color: #007bff;
+}
+
+.error {
+  font-size: 18px;
+  color: red;
+}
