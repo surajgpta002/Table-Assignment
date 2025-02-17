@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -21,7 +21,7 @@ type TableSchema = {
   txnId: string;
   mdrRate: number;
 };
-// move to arent component
+
 const columns: ColumnDef<TableSchema>[] = [
   { accessorKey: "date", header: "Date" },
   { accessorKey: "businessName", header: "Business Name" },
@@ -34,19 +34,9 @@ const columns: ColumnDef<TableSchema>[] = [
   { accessorKey: "mdrRate", header: "MDR Rate" },
 ];
 
-const fetchTransactions = async (
-  page: number,
-  limit: number,
-  filters: { [key: string]: string }
-) => {
-  const queryParams = new URLSearchParams({
-    page: String(page),
-    limit: String(limit),
-    ...filters,
-  });
-//  add in env
+const fetchTransactions = async (page: number, limit: number) => {
   const response = await axios.get(
-    `http://localhost:8080/tables?${queryParams.toString()}`
+    `http://localhost:8080/tables?page=${page}&limit=${limit}`
   );
   return response.data;
 };
@@ -54,33 +44,12 @@ const fetchTransactions = async (
 const ReactTable: React.FC = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState<{ [key: string]: string }>({});
-  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
-  const limit = 10;
 
-  // Debounce effect to update filters after user stops typing
-  // useEffect(() => {
-  //   const delayDebounce = setTimeout(() => {
-  //     setFilters(inputValues);
-  //   }, 1000);
+  const limit = 15;
 
-  //   return () => clearTimeout(delayDebounce);
-  // }, [inputValues]);
-//  add debounce
-  const handleFilterChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    column: string
-  ) => {
-    setFilters((prev) => ({
-      ...prev,
-      [column]: e.target.value,
-    }));
-  };
-
-  // move to parent component
   const { data, error, isLoading } = useQuery({
-    queryKey: ["tables", pageIndex, filters],
-    queryFn: () => fetchTransactions(pageIndex + 1, limit, filters),
+    queryKey: ["tables", pageIndex],
+    queryFn: () => fetchTransactions(pageIndex + 1, limit),
   });
 
   const totalPages = Math.ceil((data?.total || 0) / limit);
@@ -93,8 +62,8 @@ const ReactTable: React.FC = () => {
     manualPagination: true,
   });
 
-  // if (isLoading) return <p className="loading">Loading...</p>;
-  // if (error) return <p className="error">Error fetching data.</p>;
+  if (isLoading) return <p className="loading">Loading...</p>;
+  if (error) return <p className="error">Error fetching data.</p>;
 
   return (
     <div className="container">
@@ -126,6 +95,7 @@ const ReactTable: React.FC = () => {
           ))}
 
           {/* Filter Input Row (Appears Below Headers) */}
+
           {showFilters && (
             <tr>
               {table.getHeaderGroups().map((headerGroup) =>
@@ -133,9 +103,7 @@ const ReactTable: React.FC = () => {
                   <th key={header.id}>
                     <input
                       type="text"
-                      placeholder={`Search ${header.column.columnDef.header}`}
-                      value={filters[header.id] || ""}
-                      onChange={(e) => handleFilterChange(e, header.id)}
+                      placeholder="Search..."
                       className="filter-input"
                     />
                   </th>
@@ -167,23 +135,18 @@ const ReactTable: React.FC = () => {
         >
           Previous
         </button>
-{/*  keep 4 in constant also move pagination as seprate component */}
-        {Array.from({ length: totalPages }, (_, i) => i + 1)
-          .slice(
-            Math.floor(pageIndex / 4) * 4,
-            Math.floor(pageIndex / 4) * 4 + 4
-          )
-          .map((page) => (
-            <button
-              key={page}
-              onClick={() => setPageIndex(page - 1)}
-              className={`pagination-button ${
-                pageIndex + 1 === page ? "active" : ""
-              }`}
-            >
-              {page}
-            </button>
-          ))}
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => setPageIndex(page - 1)}
+            className={`pagination-button ${
+              pageIndex + 1 === page ? "active" : ""
+            }`}
+          >
+            {page}
+          </button>
+        ))}
 
         <button
           onClick={() => setPageIndex(pageIndex + 1)}

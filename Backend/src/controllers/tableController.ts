@@ -18,24 +18,54 @@ export const getTablesData = async (
 
     let query: Record<string, any> = {};
 
-    // Build dynamic filter query
+
+    // add request typebox schema, response schema for this ai
+    const numericFields = ["transferAmount", "mdrRate"];
+
     for (const key in filters) {
       if (filters[key]) {
-        query[key] = { $regex: filters[key], $options: "i" };
+        if (numericFields.includes(key)) {
+          const numValue = Number(filters[key]);
+          if (!isNaN(numValue)) {
+            query[key] = numValue;
+          }
+        } else {
+          query[key] = { $regex: filters[key], $options: "i" };
+        }
       }
+    }
+//  dont need seprate logic for filter and paginate
+    if (Object.keys(filters).length > 0) {
+      // Fetch filtered records
+      const filteredData = await Table.find(query);
+      const total = await Table.countDocuments(query);
+
+      return reply.send({
+        data: filteredData,
+        total,
+        page: Number(page) || 1,
+        limit: Number(limit) || total,
+      });
     }
 
     if (page && limit) {
+      // Paginate only when no filters are applied
       const result = await paginate(Table, {
         page: Number(page),
         limit: Number(limit),
-        query,
+        query: {},
       });
       return reply.send(result);
     }
 
-    const result = await Table.find(query);
-    return reply.send(result);
+    // Default return all data
+    const allData = await Table.find({});
+    return reply.send({
+      data: allData,
+      total: allData.length,
+      page: 1,
+      limit: allData.length,
+    });
   } catch (error: any) {
     return reply.status(500).send({ error: error.message });
   }

@@ -1,14 +1,12 @@
-import './App.css'
-import ReactTable from './components/RaectTable'
+import "./App.css";
+import ReactTable from "./components/RaectTable";
 
 function App() {
-
-
   return (
     <>
-    <ReactTable/>
+      <ReactTable />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
