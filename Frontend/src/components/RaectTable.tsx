@@ -1,86 +1,50 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
+import { columns } from "../utils/tableColumns";
+
 import {
   useReactTable,
   getCoreRowModel,
-  ColumnDef,
   flexRender,
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { FiFilter } from "react-icons/fi";
-
-type TableSchema = {
-  date: string;
-  businessName: string;
-  industryType: string;
-  transferAmount: number;
-  customerUPI: string;
-  customerUTR: string;
-  orderId: string;
-  txnId: string;
-  mdrRate: number;
-};
-// move to arent component
-const columns: ColumnDef<TableSchema>[] = [
-  { accessorKey: "date", header: "Date" },
-  { accessorKey: "businessName", header: "Business Name" },
-  { accessorKey: "industryType", header: "Industry Type" },
-  { accessorKey: "transferAmount", header: "Amount" },
-  { accessorKey: "customerUPI", header: "Customer UPI" },
-  { accessorKey: "customerUTR", header: "Customer UTR" },
-  { accessorKey: "orderId", header: "Order ID" },
-  { accessorKey: "txnId", header: "Transaction ID" },
-  { accessorKey: "mdrRate", header: "MDR Rate" },
-];
-
-const fetchTransactions = async (
-  page: number,
-  limit: number,
-  filters: { [key: string]: string }
-) => {
-  const queryParams = new URLSearchParams({
-    page: String(page),
-    limit: String(limit),
-    ...filters,
-  });
-//  add in env
-  const response = await axios.get(
-    `http://localhost:8080/tables?${queryParams.toString()}`
-  );
-  return response.data;
-};
+import Pagination from "./Pagination";
+import { fetchData } from "../api/api";
 
 const ReactTable: React.FC = () => {
+  const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
   const [pageIndex, setPageIndex] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
-  const limit = 10;
+  const debounceTimeout = useRef<number | null>(null);
 
-  // Debounce effect to update filters after user stops typing
-  // useEffect(() => {
-  //   const delayDebounce = setTimeout(() => {
-  //     setFilters(inputValues);
-  //   }, 1000);
-
-  //   return () => clearTimeout(delayDebounce);
-  // }, [inputValues]);
-//  add debounce
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     column: string
   ) => {
-    setFilters((prev) => ({
+    const value = e.target.value;
+    setInputValues((prev) => ({
       ...prev,
-      [column]: e.target.value,
+      [column]: value,
     }));
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      setFilters((prev) => ({
+        ...prev,
+        [column]: value,
+      }));
+    }, 1000);
   };
 
-  // move to parent component
-  const { data, error, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["tables", pageIndex, filters],
-    queryFn: () => fetchTransactions(pageIndex + 1, limit, filters),
+    queryFn: () => fetchData(pageIndex + 1, limit, filters),
   });
 
   const totalPages = Math.ceil((data?.total || 0) / limit);
@@ -93,12 +57,8 @@ const ReactTable: React.FC = () => {
     manualPagination: true,
   });
 
-  // if (isLoading) return <p className="loading">Loading...</p>;
-  // if (error) return <p className="error">Error fetching data.</p>;
-
   return (
     <div className="container">
-      {/* Filter Toggle Icon */}
       <div
         className="filter-icon-container"
         onClick={() => setShowFilters(!showFilters)}
@@ -111,7 +71,6 @@ const ReactTable: React.FC = () => {
 
       <table className="data-table">
         <thead>
-          {/* Header Row */}
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
@@ -125,7 +84,6 @@ const ReactTable: React.FC = () => {
             </tr>
           ))}
 
-          {/* Filter Input Row (Appears Below Headers) */}
           {showFilters && (
             <tr>
               {table.getHeaderGroups().map((headerGroup) =>
@@ -134,7 +92,7 @@ const ReactTable: React.FC = () => {
                     <input
                       type="text"
                       placeholder={`Search ${header.column.columnDef.header}`}
-                      value={filters[header.id] || ""}
+                      value={inputValues[header.id] || ""}
                       onChange={(e) => handleFilterChange(e, header.id)}
                       className="filter-input"
                     />
@@ -157,42 +115,11 @@ const ReactTable: React.FC = () => {
           ))}
         </tbody>
       </table>
-
-      {/* Pagination Controls */}
-      <div className="pagination-controls">
-        <button
-          onClick={() => setPageIndex(pageIndex - 1)}
-          disabled={pageIndex === 0}
-          className="pagination-button"
-        >
-          Previous
-        </button>
-{/*  keep 4 in constant also move pagination as seprate component */}
-        {Array.from({ length: totalPages }, (_, i) => i + 1)
-          .slice(
-            Math.floor(pageIndex / 4) * 4,
-            Math.floor(pageIndex / 4) * 4 + 4
-          )
-          .map((page) => (
-            <button
-              key={page}
-              onClick={() => setPageIndex(page - 1)}
-              className={`pagination-button ${
-                pageIndex + 1 === page ? "active" : ""
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-
-        <button
-          onClick={() => setPageIndex(pageIndex + 1)}
-          disabled={pageIndex + 1 >= totalPages}
-          className="pagination-button"
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        pageIndex={pageIndex}
+        totalPages={totalPages}
+        setPageIndex={setPageIndex}
+      />
     </div>
   );
 };
