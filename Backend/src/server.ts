@@ -15,10 +15,8 @@ server.register(cors, {
   allowedHeaders: ["Content-Type", "Authorization"],
 });
 
-// Connect to MongoDB
 connectDB();
 
-// Register Routes
 server.register(tableRoutes);
 
 server.listen({ port: Number(PORT) }, (err, address) => {

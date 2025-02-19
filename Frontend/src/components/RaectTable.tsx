@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { columns } from "../utils/tableColumns";
-
 import {
   useReactTable,
   getCoreRowModel,
@@ -12,12 +11,14 @@ import { FiFilter } from "react-icons/fi";
 import Pagination from "./Pagination";
 import { fetchData } from "../api/api";
 
+const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
+
 const ReactTable: React.FC = () => {
-  const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
   const [pageIndex, setPageIndex] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
+  const [jumpPage, setJumpPage] = useState("1");
   const debounceTimeout = useRef<number | null>(null);
 
   const handleFilterChange = (
@@ -35,10 +36,15 @@ const ReactTable: React.FC = () => {
     }
 
     debounceTimeout.current = setTimeout(() => {
-      setFilters((prev) => ({
-        ...prev,
-        [column]: value,
-      }));
+      setFilters((prev) => {
+        const newFilters = { ...prev };
+        if (value.trim() === "") {
+          delete newFilters[column];
+        } else {
+          newFilters[column] = value;
+        }
+        return newFilters;
+      });
     }, 1000);
   };
 
@@ -56,6 +62,15 @@ const ReactTable: React.FC = () => {
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
   });
+
+  const handleJumpToPage = () => {
+    const pageNumber = Number(jumpPage);
+    if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= totalPages) {
+      setPageIndex(pageNumber - 1);
+    } else {
+      alert("Invalid page number!");
+    }
+  };
 
   return (
     <div className="container">
@@ -89,13 +104,37 @@ const ReactTable: React.FC = () => {
               {table.getHeaderGroups().map((headerGroup) =>
                 headerGroup.headers.map((header) => (
                   <th key={header.id}>
-                    <input
-                      type="text"
-                      placeholder={`Search ${header.column.columnDef.header}`}
-                      value={inputValues[header.id] || ""}
-                      onChange={(e) => handleFilterChange(e, header.id)}
-                      className="filter-input"
-                    />
+                    {header.id === "date" ? (
+                      <div className="date-range-filter">
+                        <input
+                          type="date"
+                          placeholder="Start Date"
+                          value={inputValues[`${header.id}_start`] || ""}
+                          onChange={(e) =>
+                            handleFilterChange(e, `${header.id}_start`)
+                          }
+                          className="filter-input wide"
+                        />
+                        <span> to </span>
+                        <input
+                          type="date"
+                          placeholder="End Date"
+                          value={inputValues[`${header.id}_end`] || ""}
+                          onChange={(e) =>
+                            handleFilterChange(e, `${header.id}_end`)
+                          }
+                          className="filter-input wide"
+                        />
+                      </div>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={`Search ${header.column.columnDef.header}`}
+                        value={inputValues[header.id] || ""}
+                        onChange={(e) => handleFilterChange(e, header.id)}
+                        className="filter-input"
+                      />
+                    )}
                   </th>
                 ))
               )}
@@ -115,11 +154,23 @@ const ReactTable: React.FC = () => {
           ))}
         </tbody>
       </table>
+
       <Pagination
         pageIndex={pageIndex}
         totalPages={totalPages}
         setPageIndex={setPageIndex}
       />
+
+      <div className="pageJump">
+        <input
+          type="number"
+          min="1"
+          max={totalPages}
+          value={jumpPage}
+          onChange={(e) => setJumpPage(e.target.value)}
+        />
+        <button onClick={handleJumpToPage}>Jump To Page</button>
+      </div>
     </div>
   );
 };

@@ -96,3 +96,61 @@
   font-size: 18px;
   color: red;
 }
+
+
+.pageJump {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pageJump input {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.pageJump input:focus {
+  border-color: #007bff;
+}
+
+.pageJump button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.pageJump button:hover {
+  background-color: #0056b3;
+}
+
+.pageJump button:active {
+  background-color: #003d80;
+}
+
+@media (max-width: 600px) {
+  .pageJump {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .pageJump input {
+    width: 100%;
+  }
+
+  .pageJump button {
+    width: 100%;
+  }
+}
