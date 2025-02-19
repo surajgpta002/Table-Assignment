@@ -11,7 +11,7 @@ const server = Fastify({ logger: true });
 
 server.register(cors, {
   origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"], 
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 });
 
@@ -20,9 +20,6 @@ connectDB();
 
 // Register Routes
 server.register(tableRoutes);
-
-
-
 
 server.listen({ port: Number(PORT) }, (err, address) => {
   if (err) {

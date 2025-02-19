@@ -18,9 +18,8 @@ export const getTablesData = async (
 
     let query: Record<string, any> = {};
 
-
-    // add request typebox schema, response schema for this ai
     const numericFields = ["transferAmount", "mdrRate"];
+    // typeof filters[key] == 'number'
 
     for (const key in filters) {
       if (filters[key]) {
@@ -34,38 +33,14 @@ export const getTablesData = async (
         }
       }
     }
-//  dont need seprate logic for filter and paginate
-    if (Object.keys(filters).length > 0) {
-      // Fetch filtered records
-      const filteredData = await Table.find(query);
-      const total = await Table.countDocuments(query);
 
-      return reply.send({
-        data: filteredData,
-        total,
-        page: Number(page) || 1,
-        limit: Number(limit) || total,
-      });
-    }
-
-    if (page && limit) {
-      // Paginate only when no filters are applied
-      const result = await paginate(Table, {
-        page: Number(page),
-        limit: Number(limit),
-        query: {},
-      });
-      return reply.send(result);
-    }
-
-    // Default return all data
-    const allData = await Table.find({});
-    return reply.send({
-      data: allData,
-      total: allData.length,
-      page: 1,
-      limit: allData.length,
+    const result = await paginate(Table, {
+      page,
+      limit,
+      query,
     });
+
+    return reply.send(result);
   } catch (error: any) {
     return reply.status(500).send({ error: error.message });
   }
