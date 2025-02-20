@@ -5,6 +5,25 @@ import { GetTablesDataQuerySchema } from "../models/validationSchemas";
 import { Static } from "@sinclair/typebox";
 
 /**
+ * Create a new Table Data
+ */
+
+export const createNewData = async (
+  req: FastifyRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const newTableData = await Table.create(req.body);
+
+    reply.code(201).send(newTableData);
+  } catch (error: any) {
+    reply
+      .code(500)
+      .send({ error: "Error creating Table Data", details: error.message });
+  }
+};
+
+/**
  * Get all Table Data
  */
 
@@ -48,24 +67,5 @@ export const getTablesData = async (
     return reply.send(result);
   } catch (error: any) {
     return reply.status(500).send({ error: error.message });
-  }
-};
-
-/**
- * Create a new Table Data
- */
-
-export const createNewData = async (
-  req: FastifyRequest,
-  reply: FastifyReply
-) => {
-  try {
-    const newTableData = await Table.create(req.body);
-
-    reply.code(201).send(newTableData);
-  } catch (error: any) {
-    reply
-      .code(500)
-      .send({ error: "Error creating Table Data", details: error.message });
   }
 };
