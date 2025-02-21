@@ -1,10 +1,9 @@
-import "./App.css";
-import ReactTable from "./components/RaectTable";
+import CustomerTable from "./components/CustomerTable";
 
 function App() {
   return (
     <>
-      <ReactTable />
+      <CustomerTable />
     </>
   );
 }

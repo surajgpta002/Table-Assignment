@@ -1,21 +1,24 @@
 import React, { useState, useRef } from "react";
-import { columns } from "../utils/tableColumns";
 import {
   useReactTable,
   getCoreRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-
 import Pagination from "./customerTable/Pagination";
-import { fetchData } from "../api/api";
-import CustomerTable from "./customerTable/CustomerTable";
+import GenericTable from "./customerTable/GenericTable";
 import JumpToColumn from "./customerTable/JumpToColumn";
 import ShowFilter from "./customerTable/ShowFilter";
 
 const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
 
-const ReactTable: React.FC = () => {
+const ReactTable = ({
+  columns,
+  fetchData,
+}: {
+  columns: any;
+  fetchData: any;
+}) => {
   const [pageIndex, setPageIndex] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
@@ -79,7 +82,7 @@ const ReactTable: React.FC = () => {
 
       <h1 className="table-title">Customer Table</h1>
 
-      <CustomerTable
+      <GenericTable
         handleFilterChange={handleFilterChange}
         inputValues={inputValues}
         showFilters={showFilters}

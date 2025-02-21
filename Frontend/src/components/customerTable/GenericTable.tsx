@@ -1,6 +1,6 @@
 import { flexRender } from "@tanstack/react-table";
 
-function CustomerTable({
+function GenericTable({
   table,
   showFilters,
   inputValues,
@@ -85,4 +85,4 @@ function CustomerTable({
   );
 }
 
-export default CustomerTable;
+export default GenericTable;
