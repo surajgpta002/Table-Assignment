@@ -7,17 +7,29 @@ interface PaginationResult<T> {
   size: number;
 }
 
-export const paginate = async <T>(
+export const paginateWithAggregation = async <T>(
   model: Model<T>,
-  queryParams: any
+  queryParams: any,
+  initialPipeline: any[] = []
 ): Promise<PaginationResult<T>> => {
   const page: number = queryParams.page ? parseInt(queryParams.page) : 1;
   const size: number = queryParams.limit ? parseInt(queryParams.limit) : 10;
   const skip: number = (page - 1) * size;
-  const query = queryParams.query || {};
 
-  const total: number = await model.countDocuments(query);
-  const data: T[] = await model.find(query).skip(skip).limit(size);
+  const pipeline: any[] = [...initialPipeline];
+
+  const result = await model.aggregate([
+    ...pipeline,
+    {
+      $facet: {
+        data: [{ $skip: skip }, { $limit: size }],
+        totalCount: [{ $count: "total" }],
+      },
+    },
+  ]);
+
+  const total = result[0].totalCount[0]?.total || 0;
+  const data = result[0].data;
 
   return { data, total, page, size };
 };

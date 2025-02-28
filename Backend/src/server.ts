@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db";
-import tableRoutes from "./routes/tableRoutes";
+import tableRoutes from "./routes/routes";
 import cors from "@fastify/cors";
 
 dotenv.config();

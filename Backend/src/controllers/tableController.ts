@@ -1,8 +1,10 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { Table } from "../models/tableModel";
-import { paginate } from "../utils/pagination";
-import { GetTablesDataQuerySchema } from "../models/validationSchemas";
+import { GetTablesDataQuerySchema } from "../schema/tableSchema";
 import { Static } from "@sinclair/typebox";
+import { Order } from "../models/orderModel";
+import { paginateWithAggregation } from "../utils/pagination";
+import { OrderSchema } from "../schema/OrderSchema";
 
 /**
  * Create a new Table Data
@@ -24,7 +26,23 @@ export const createNewData = async (
 };
 
 /**
- * Get all Table Data
+ * Create a new Order
+ */
+
+export const OrderData = async (req: FastifyRequest, reply: FastifyReply) => {
+  try {
+    const newOrderData = await Order.create(req.body);
+
+    reply.code(201).send(newOrderData);
+  } catch (error: any) {
+    reply
+      .code(500)
+      .send({ error: "Error creating Table Data", details: error.message });
+  }
+};
+
+/**
+ * Get all Table and Orders Data
  */
 
 type QueryType = Static<typeof GetTablesDataQuerySchema>;
@@ -37,6 +55,9 @@ export const getTablesData = async (
     const { page, limit, date_start, date_end, ...filters } = request.query;
 
     let query: Record<string, any> = {};
+    let orderQuery: Record<string, any> = {};
+
+    const orderFields = Object.keys(OrderSchema.properties);
 
     const filterObj = filters as Record<string, any>;
 
@@ -44,10 +65,18 @@ export const getTablesData = async (
       const value = filterObj[key];
 
       if (value !== undefined && value !== null) {
-        if (typeof value === "number") {
-          query[key] = value;
+        if (!isNaN(Number(value))) {
+          if (orderFields.includes(key)) {
+            orderQuery[key] = Number(value);
+          } else {
+            query[key] = Number(value);
+          }
         } else if (typeof value === "string") {
-          query[key] = { $regex: value, $options: "i" };
+          if (orderFields.includes(key)) {
+            orderQuery[key] = { $regex: value, $options: "i" };
+          } else {
+            query[key] = { $regex: value, $options: "i" };
+          }
         }
       }
     }
@@ -58,11 +87,31 @@ export const getTablesData = async (
       if (date_end) query.date.$lte = new Date(date_end);
     }
 
-    const result = await paginate(Table, {
-      page,
-      limit,
-      query,
+    const pipeline: any[] = [];
+
+    if (Object.keys(query).length > 0) {
+      pipeline.push({ $match: query });
+    }
+
+    pipeline.push({
+      $lookup: {
+        from: "orders-collections",
+        localField: "orderId",
+        foreignField: "orderId",
+        as: "orderDetails",
+        pipeline: [{ $match: orderQuery }],
+      },
     });
+
+    pipeline.push({
+      $unwind: { path: "$orderDetails", preserveNullAndEmptyArrays: false },
+    });
+
+    const result = await paginateWithAggregation(
+      Table,
+      { page, limit },
+      pipeline
+    );
 
     return reply.send(result);
   } catch (error: any) {

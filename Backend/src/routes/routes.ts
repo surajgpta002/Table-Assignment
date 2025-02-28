@@ -1,7 +1,11 @@
 import { FastifyInstance } from "fastify";
 import Fastify from "fastify";
-import { getTablesData, createNewData } from "../controllers/tableController";
-import { GetTablesDataQuerySchema } from "../models/validationSchemas";
+import {
+  getTablesData,
+  createNewData,
+  OrderData,
+} from "../controllers/tableController";
+import { GetTablesDataQuerySchema } from "../schema/tableSchema";
 
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
@@ -21,6 +25,12 @@ async function tableRoutes(fastify: FastifyInstance) {
     method: "POST",
     url: "/table",
     handler: createNewData,
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/order",
+    handler: OrderData,
   });
 }
 
