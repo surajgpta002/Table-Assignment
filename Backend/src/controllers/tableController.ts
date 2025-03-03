@@ -52,12 +52,14 @@ export const getTablesData = async (
   reply: FastifyReply
 ) => {
   try {
-    const { page, limit, date_start, date_end, ...filters } = request.query;
+    const { page, limit, date_start, date_end, search, ...filters } =
+      request.query;
 
     let query: Record<string, any> = {};
     let orderQuery: Record<string, any> = {};
 
     const orderFields = Object.keys(OrderSchema.properties);
+    const tableFields = Object.keys(GetTablesDataQuerySchema.properties);
 
     const filterObj = filters as Record<string, any>;
 
@@ -104,8 +106,23 @@ export const getTablesData = async (
     });
 
     pipeline.push({
-      $unwind: { path: "$orderDetails", preserveNullAndEmptyArrays: false },
+      $unwind: { path: "$orderDetails" },
     });
+
+    if (search) {
+      const searchRegex = { $regex: search, $options: "i" };
+
+      pipeline.push({
+        $match: {
+          $or: [
+            ...tableFields.map((field) => ({ [field]: searchRegex })),
+            ...orderFields.map((field) => ({
+              [`orderDetails.${field}`]: searchRegex,
+            })),
+          ],
+        },
+      });
+    }
 
     const result = await paginateWithAggregation(
       Table,

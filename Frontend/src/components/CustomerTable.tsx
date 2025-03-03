@@ -16,6 +16,11 @@ function CustomerTable() {
     orderId: string;
     txnId: string;
     mdrRate: number;
+    orderDetails: {
+      productName: string;
+      quantity: number;
+      price: number;
+    };
   };
 
   const columns: ColumnDef<TableSchema>[] = [
@@ -28,7 +33,7 @@ function CustomerTable() {
       },
       size: 150,
     },
-    { accessorKey: "businessName", header: "Business Name", size: 200 },
+    { accessorKey: "businessName", header: "Business Name", size: 400 },
     { accessorKey: "industryType", header: "Industry Type", size: 180 },
     { accessorKey: "transferAmount", header: "Amount", size: 120 },
     { accessorKey: "customerUPI", header: "Customer UPI", size: 220 },
@@ -36,6 +41,24 @@ function CustomerTable() {
     { accessorKey: "orderId", header: "Order ID", size: 180 },
     { accessorKey: "txnId", header: "Transaction ID", size: 180 },
     { accessorKey: "mdrRate", header: "MDR Rate", size: 100 },
+    {
+      accessorKey: "orderDetails.productName",
+      header: "Product Name",
+      cell: ({ row }) => row.original.orderDetails?.productName || "N/A",
+      size: 200,
+    },
+    {
+      accessorKey: "orderDetails.quantity",
+      header: "Quantity",
+      cell: ({ row }) => row.original.orderDetails?.quantity || "N/A",
+      size: 100,
+    },
+    {
+      accessorKey: "orderDetails.price",
+      header: "Price",
+      cell: ({ row }) => row.original.orderDetails?.price || "N/A",
+      size: 120,
+    },
   ];
 
   const fetchData = async (
@@ -43,14 +66,34 @@ function CustomerTable() {
     limit: number,
     filters: { [key: string]: string }
   ) => {
+    const formattedFilters: { [key: string]: string } = {};
+
+    Object.keys(filters).forEach((key) => {
+      if (key.startsWith("orderDetails_")) {
+        formattedFilters[key.replace("orderDetails_", "")] = filters[key];
+      } else {
+        formattedFilters[key] = filters[key];
+      }
+    });
+
     const queryParams = new URLSearchParams({
       page: String(page),
       limit: String(limit),
-      ...filters,
+      ...formattedFilters,
     });
 
     const response = await axios.get(`${apiUrl}?${queryParams.toString()}`);
-    return response.data;
+
+    const formattedData = response.data.data.map((item: any) => ({
+      ...item,
+      orderDetails: item.orderDetails || {
+        productName: "N/A",
+        quantity: 0,
+        price: 0,
+      },
+    }));
+
+    return { ...response.data, data: formattedData };
   };
   return (
     <>

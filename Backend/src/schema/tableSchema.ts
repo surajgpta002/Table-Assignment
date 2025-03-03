@@ -10,10 +10,12 @@ export const GetTablesDataQuerySchema = Type.Partial(
     industryType: Type.Optional(Type.String()),
     transferAmount: Type.Optional(Type.Number()),
     mdrRate: Type.Optional(Type.Number()),
-    customerUpi: Type.Optional(Type.String()),
-    customerUtr: Type.Optional(Type.String()),
+    customerUPI: Type.Optional(Type.String()),
+    customerUTR: Type.Optional(Type.String()),
     orderId: Type.Optional(Type.String()),
     txnId: Type.Optional(Type.String()),
+
+    search: Type.Optional(Type.String()),
   })
 );
 

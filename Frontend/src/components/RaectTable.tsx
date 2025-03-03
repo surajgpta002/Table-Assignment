@@ -9,6 +9,7 @@ import Pagination from "./customerTable/Pagination";
 import GenericTable from "./customerTable/GenericTable";
 import JumpToColumn from "./customerTable/JumpToColumn";
 import ShowFilter from "./customerTable/ShowFilter";
+import SearchBar from "./customerTable/SearchBar";
 
 const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
 
@@ -67,6 +68,30 @@ const ReactTable = ({
     }, 1000);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValues((prev) => ({
+      ...prev,
+      search: value,
+    }));
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      setFilters((prev) => {
+        const newFilters = { ...prev };
+        if (value.trim() === "") {
+          delete newFilters.search;
+        } else {
+          newFilters.search = value;
+        }
+        return newFilters;
+      });
+    }, 500);
+  };
+
   const handleJumpToPage = () => {
     const pageNumber = Number(jumpPage);
     if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= totalPages) {
@@ -79,6 +104,11 @@ const ReactTable = ({
   return (
     <div className="container">
       <ShowFilter setShowFilters={setShowFilters} showFilters={showFilters} />
+
+      <SearchBar
+        inputValues={inputValues}
+        handleSearchChange={handleSearchChange}
+      />
 
       <h1 className="table-title">Customer Table</h1>
 

@@ -5,9 +5,12 @@ import tableRoutes from "./routes/routes";
 import cors from "@fastify/cors";
 
 dotenv.config();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 4000;
+process.env.UV_THREADPOOL_SIZE = "8";
 
-const server = Fastify({ logger: true });
+const server = Fastify({
+  logger: true,
+});
 
 server.register(cors, {
   origin: "*",
