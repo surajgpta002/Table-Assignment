@@ -31,6 +31,7 @@ const ReactTable = ({
     queryKey: ["tables", pageIndex, filters],
     queryFn: () => fetchData(pageIndex + 1, limit, filters),
   });
+
   const totalPages = Math.ceil((data?.total || 0) / limit);
 
   const table = useReactTable({
@@ -65,15 +66,12 @@ const ReactTable = ({
         }
         return newFilters;
       });
+      setPageIndex(0);
     }, 1000);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setInputValues((prev) => ({
-      ...prev,
-      search: value,
-    }));
 
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
@@ -89,6 +87,7 @@ const ReactTable = ({
         }
         return newFilters;
       });
+      setPageIndex(0);
     }, 500);
   };
 
@@ -105,10 +104,7 @@ const ReactTable = ({
     <div className="container">
       <ShowFilter setShowFilters={setShowFilters} showFilters={showFilters} />
 
-      <SearchBar
-        inputValues={inputValues}
-        handleSearchChange={handleSearchChange}
-      />
+      <SearchBar handleSearchChange={handleSearchChange} />
 
       <h1 className="table-title">Customer Table</h1>
 

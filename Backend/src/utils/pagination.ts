@@ -18,18 +18,17 @@ export const paginateWithAggregation = async <T>(
 
   const pipeline: any[] = [...initialPipeline];
 
-  const result = await model.aggregate([
-    ...pipeline,
-    {
-      $facet: {
-        data: [{ $skip: skip }, { $limit: size }],
-        totalCount: [{ $count: "total" }],
-      },
+  pipeline.push({
+    $facet: {
+      paginatedData: [{ $skip: skip }, { $limit: size }],
+      totalCount: [{ $count: "total" }],
     },
-  ]);
+  });
+
+  const result = await model.aggregate(pipeline);
 
   const total = result[0].totalCount[0]?.total || 0;
-  const data = result[0].data;
+  const data = result[0].paginatedData;
 
   return { data, total, page, size };
 };

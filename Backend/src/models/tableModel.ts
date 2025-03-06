@@ -20,7 +20,7 @@ const TableSchema = new Schema<ITable>(
     transferAmount: { type: Number, required: true },
     customerUPI: { type: String, required: true },
     customerUTR: { type: String, required: true },
-    orderId: { type: String, required: true },
+    orderId: { type: String, required: true, index: true },
     txnId: { type: String, required: true },
     mdrRate: { type: Number, required: true },
   },

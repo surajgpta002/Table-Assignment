@@ -4,6 +4,20 @@ import { connectDB } from "./config/db";
 import tableRoutes from "./routes/routes";
 import cors from "@fastify/cors";
 
+import { Table } from "./models/tableModel";
+import { Order } from "./models/orderModel";
+
+const syncDatabaseIndexes = async () => {
+  try {
+    await Table.syncIndexes();
+    await Order.syncIndexes();
+    console.log("Indexes synced successfully.");
+  } catch (error) {
+    console.error("Error syncing indexes:", error);
+  }
+};
+syncDatabaseIndexes();
+
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 process.env.UV_THREADPOOL_SIZE = "8";

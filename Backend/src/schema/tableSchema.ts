@@ -14,7 +14,6 @@ export const GetTablesDataQuerySchema = Type.Partial(
     customerUTR: Type.Optional(Type.String()),
     orderId: Type.Optional(Type.String()),
     txnId: Type.Optional(Type.String()),
-
     search: Type.Optional(Type.String()),
   })
 );

@@ -31,7 +31,7 @@ function CustomerTable() {
         const rawDate = getValue() as string;
         return format(new Date(rawDate), "dd-MM-yyyy");
       },
-      size: 150,
+      size: 250,
     },
     { accessorKey: "businessName", header: "Business Name", size: 400 },
     { accessorKey: "industryType", header: "Industry Type", size: 180 },
@@ -86,11 +86,7 @@ function CustomerTable() {
 
     const formattedData = response.data.data.map((item: any) => ({
       ...item,
-      orderDetails: item.orderDetails || {
-        productName: "N/A",
-        quantity: 0,
-        price: 0,
-      },
+      orderDetails: item.orderDetails,
     }));
 
     return { ...response.data, data: formattedData };

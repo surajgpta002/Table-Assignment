@@ -111,7 +111,6 @@ export const getTablesData = async (
 
     if (search) {
       const searchRegex = { $regex: search, $options: "i" };
-
       pipeline.push({
         $match: {
           $or: [

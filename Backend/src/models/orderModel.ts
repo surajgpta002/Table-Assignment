@@ -9,7 +9,7 @@ export interface IOrder extends Document {
 
 const OrderSchema = new Schema<IOrder>(
   {
-    orderId: { type: String, required: true },
+    orderId: { type: String, required: true, index: true },
     productName: { type: String, required: true },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },

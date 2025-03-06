@@ -6,13 +6,16 @@ interface PaginationProps {
   setPageIndex: (index: number) => void;
 }
 
-const no_of_pagesBox = import.meta.env.VITE_NO_OF_PAGES;
+const no_of_pagesBox = Number(import.meta.env.VITE_NO_OF_PAGES);
 
 const Pagination: React.FC<PaginationProps> = ({
   pageIndex,
   totalPages,
   setPageIndex,
 }) => {
+  const startPage = Math.floor(pageIndex / no_of_pagesBox) * no_of_pagesBox;
+  const endPage = Math.min(startPage + no_of_pagesBox, totalPages);
+
   return (
     <div className="pagination-controls">
       <button
@@ -23,23 +26,20 @@ const Pagination: React.FC<PaginationProps> = ({
         Previous
       </button>
 
-      {Array.from({ length: totalPages }, (_, i) => i + 1)
-        .slice(
-          Math.floor(pageIndex / no_of_pagesBox) * no_of_pagesBox,
-          Math.floor(pageIndex / no_of_pagesBox) * no_of_pagesBox +
-            no_of_pagesBox
-        )
-        .map((page) => (
-          <button
-            key={page}
-            onClick={() => setPageIndex(page - 1)}
-            className={`pagination-button ${
-              pageIndex + 1 === page ? "active" : ""
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+      {Array.from(
+        { length: endPage - startPage },
+        (_, i) => startPage + i + 1
+      ).map((page) => (
+        <button
+          key={page}
+          onClick={() => setPageIndex(page - 1)}
+          className={`pagination-button ${
+            pageIndex + 1 === page ? "active" : ""
+          }`}
+        >
+          {page}
+        </button>
+      ))}
 
       <button
         onClick={() => setPageIndex(pageIndex + 1)}
