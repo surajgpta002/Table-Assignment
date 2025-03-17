@@ -2,8 +2,9 @@ import { FastifyInstance } from "fastify";
 import Fastify from "fastify";
 import {
   getTablesData,
-  createNewData,
-  OrderData,
+  insertBulkTableData,
+  insertBulkOrdersData,
+  exportData,
 } from "../controllers/tableController";
 import { GetTablesDataQuerySchema } from "../schema/tableSchema";
 
@@ -24,13 +25,19 @@ async function tableRoutes(fastify: FastifyInstance) {
   fastify.route({
     method: "POST",
     url: "/table",
-    handler: createNewData,
+    handler: insertBulkTableData,
   });
 
   fastify.route({
     method: "POST",
     url: "/order",
-    handler: OrderData,
+    handler: insertBulkOrdersData,
+  });
+
+  fastify.route({
+    method: "GET",
+    url: "/export",
+    handler: exportData,
   });
 }
 

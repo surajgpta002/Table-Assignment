@@ -5,14 +5,16 @@ function GenericTable({
   showFilters,
   inputValues,
   handleFilterChange,
+  isLoading,
 }: {
   table: any;
   showFilters: any;
   inputValues: any;
   handleFilterChange: any;
+  isLoading: any;
 }) {
   return (
-    <table className="data-table">
+    <table className="data-table bg-red-900">
       <thead>
         {table.getHeaderGroups().map((headerGroup: any) => (
           <tr key={headerGroup.id}>
@@ -71,15 +73,23 @@ function GenericTable({
       </thead>
 
       <tbody>
-        {table.getRowModel().rows.map((row: any) => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map((cell: any) => (
-              <td key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
+        {isLoading ? (
+          <tr>
+            <td colSpan={table.getHeaderGroups()[0]?.headers.length || 1}>
+              <h1>Loading....</h1>
+            </td>
           </tr>
-        ))}
+        ) : (
+          table.getRowModel().rows.map((row: any) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell: any) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))
+        )}
       </tbody>
     </table>
   );

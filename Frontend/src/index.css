@@ -1,3 +1,5 @@
+/* @import "tailwindcss"; */
+
 .container {
   max-width: 90%;
   margin: auto;
@@ -15,6 +17,7 @@
   color: #007bff;
   background-color: #f8f9fa;
   transition: all 0.3s ease;
+  margin-top: 30px;
 }
 
 .filter-icon-container:hover {
@@ -171,4 +174,56 @@
   .pageJump button {
     width: 100%;
   }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  position: relative;
+}
+
+.export-import {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.export-button,
+.export-all-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.export-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.export-button:hover {
+  background-color: #2980b9;
+}
+
+.export-all-button {
+  background-color: #27ae60;
+  color: white;
+}
+
+.export-all-button:hover {
+  background-color: #219150;
+}
+
+.export-all-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }

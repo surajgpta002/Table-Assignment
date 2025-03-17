@@ -1,9 +1,9 @@
-import CustomerTable from "./components/CustomerTable";
+import Tables from "./components/Tables";
 
 function App() {
   return (
     <>
-      <CustomerTable />
+      <Tables />
     </>
   );
 }

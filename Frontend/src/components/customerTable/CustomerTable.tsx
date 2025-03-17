@@ -5,20 +5,21 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import Pagination from "./customerTable/Pagination";
-import GenericTable from "./customerTable/GenericTable";
-import JumpToColumn from "./customerTable/JumpToColumn";
-import ShowFilter from "./customerTable/ShowFilter";
-import SearchBar from "./customerTable/SearchBar";
+import Pagination from "./Pagination";
+import GenericTable from "../GenericTable";
+import JumpToColumn from "./JumpToColumn";
+import ShowFilter from "./ShowFilter";
+import SearchBar from "./SearchBar";
+import ExportButtons from "./ExportButtons";
 
 const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
 
-const ReactTable = ({
+const CustomerTable = ({
   columns,
-  fetchData,
+  FetchDataCustomer,
 }: {
   columns: any;
-  fetchData: any;
+  FetchDataCustomer: any;
 }) => {
   const [pageIndex, setPageIndex] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
@@ -27,9 +28,9 @@ const ReactTable = ({
   const [jumpPage, setJumpPage] = useState("1");
   const debounceTimeout = useRef<number | null>(null);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["tables", pageIndex, filters],
-    queryFn: () => fetchData(pageIndex + 1, limit, filters),
+    queryFn: () => FetchDataCustomer(pageIndex + 1, limit, filters),
   });
 
   const totalPages = Math.ceil((data?.total || 0) / limit);
@@ -102,17 +103,22 @@ const ReactTable = ({
 
   return (
     <div className="container">
+      <ExportButtons
+        filters={filters}
+        pageIndex={pageIndex + 1}
+        limit={limit}
+      />
+
       <ShowFilter setShowFilters={setShowFilters} showFilters={showFilters} />
 
       <SearchBar handleSearchChange={handleSearchChange} />
-
-      <h1 className="table-title">Customer Table</h1>
 
       <GenericTable
         handleFilterChange={handleFilterChange}
         inputValues={inputValues}
         showFilters={showFilters}
         table={table}
+        isLoading={isLoading}
       />
 
       <Pagination
@@ -131,4 +137,4 @@ const ReactTable = ({
   );
 };
 
-export default ReactTable;
+export default CustomerTable;
