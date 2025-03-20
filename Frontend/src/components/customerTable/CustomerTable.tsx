@@ -11,6 +11,7 @@ import JumpToColumn from "./JumpToColumn";
 import ShowFilter from "./ShowFilter";
 import SearchBar from "./SearchBar";
 import ExportButtons from "./ExportButtons";
+import FileUpload from "./FileUpload";
 
 const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
 
@@ -42,6 +43,8 @@ const CustomerTable = ({
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
   });
+
+  let totalCount = data?.total;
 
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -109,6 +112,8 @@ const CustomerTable = ({
         limit={limit}
       />
 
+      <FileUpload />
+
       <ShowFilter setShowFilters={setShowFilters} showFilters={showFilters} />
 
       <SearchBar handleSearchChange={handleSearchChange} />
@@ -132,6 +137,7 @@ const CustomerTable = ({
         jumpPage={jumpPage}
         setJumpPage={setJumpPage}
         totalPages={totalPages}
+        totalCount={totalCount}
       />
     </div>
   );

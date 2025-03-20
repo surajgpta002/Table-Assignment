@@ -55,7 +55,7 @@ export const fetchTableData = async (
   });
 
   pipeline.push({
-    $unwind: { path: "$orderDetails", preserveNullAndEmptyArrays: true },
+    $unwind: { path: "$orderDetails", preserveNullAndEmptyArrays: false },
   });
 
   if (search) {
@@ -99,5 +99,12 @@ export const fetchTableData = async (
     return await Table.aggregate(pipeline);
   }
 
-  return await paginateWithAggregation(Table, { page, limit }, pipeline);
+  const useLightCount = !search && Object.keys(orderQuery).length == 0;
+
+  return await paginateWithAggregation(
+    Table,
+    { page, limit },
+    pipeline,
+    useLightCount ? query : undefined
+  );
 };

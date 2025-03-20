@@ -3,12 +3,12 @@ import Fastify from "fastify";
 import {
   getTablesData,
   insertBulkTableData,
-  insertBulkOrdersData,
-  exportData,
 } from "../controllers/tableController";
 import { GetTablesDataQuerySchema } from "../schema/tableSchema";
-
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import { insertBulkOrdersData } from "../controllers/orderController";
+import { exportData } from "../controllers/exportController";
+import { uploadExcelData } from "../controllers/importContoller";
 
 const fastify = Fastify().withTypeProvider<TypeBoxTypeProvider>();
 
@@ -38,6 +38,11 @@ async function tableRoutes(fastify: FastifyInstance) {
     method: "GET",
     url: "/export",
     handler: exportData,
+  });
+  fastify.route({
+    method: "POST",
+    url: "/import",
+    handler: uploadExcelData,
   });
 }
 

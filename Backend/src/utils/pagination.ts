@@ -10,31 +10,37 @@ export interface PaginationResult<T> {
 export const paginateWithAggregation = async <T>(
   model: Model<T>,
   queryParams: { page?: string; limit?: string },
-  initialPipeline: any[] = []
+  initialPipeline: any[] = [],
+  lightCountQuery?: any
 ): Promise<PaginationResult<T>> => {
   const page = queryParams.page ? parseInt(queryParams.page) : 1;
   const size = queryParams.limit ? parseInt(queryParams.limit) : 10;
   const skip = (page - 1) * size;
 
-  const pipeline: any[] = [...initialPipeline];
+  let total: number;
+  let data: T[];
 
-  const execResult = await Promise.all([
-    model.aggregate(pipeline).skip(skip).limit(size),
-    model.aggregate(pipeline).count("total"),
-  ]);
-  const data = execResult[0];
-  const total = execResult[1]?.[0]?.total;
-
-  // pipeline.push({
-  //   $facet: {
-  //     paginatedData: [{ $skip: skip }, { $limit: size }],
-  //     totalCount: [{ $count: "total" }],
-  //   },
-  // });
-  // const result = await model.aggregate(pipeline);
-
-  // const total = result[0]?.totalCount?.[0]?.total || 0;
-  // const data = result[0]?.paginatedData || [];
+  if (lightCountQuery) {
+    total = await model.countDocuments(lightCountQuery);
+    data = await model.aggregate([
+      ...initialPipeline,
+      { $skip: skip },
+      { $limit: size },
+    ]);
+  } else {
+    const pipeline = [
+      ...initialPipeline,
+      {
+        $facet: {
+          data: [{ $skip: skip }, { $limit: size }],
+          totalCount: [{ $count: "total" }],
+        },
+      },
+    ];
+    const results = await model.aggregate(pipeline);
+    data = results[0].data;
+    total = results[0].totalCount[0] ? results[0].totalCount[0].total : 0;
+  }
 
   return { data, total, page, size };
 };

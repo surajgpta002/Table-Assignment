@@ -16,7 +16,6 @@ export const exportDataApi = async (
 
   try {
     const response = await axios.get(url, { responseType: "blob" });
-
     const fileName = exportAll ? "FullData.xlsx" : "FilteredData.xlsx";
     saveAs(response.data, fileName);
   } catch (error) {

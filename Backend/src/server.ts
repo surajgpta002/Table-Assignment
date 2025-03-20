@@ -2,8 +2,8 @@ import Fastify from "fastify";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db";
 import tableRoutes from "./routes/routes";
+import fastifyMultipart from "@fastify/multipart";
 import cors from "@fastify/cors";
-
 import { Table } from "./models/tableModel";
 import { Order } from "./models/orderModel";
 
@@ -20,7 +20,6 @@ syncDatabaseIndexes();
 
 dotenv.config();
 const PORT = process.env.PORT || 4000;
-process.env.UV_THREADPOOL_SIZE = "8";
 
 const server = Fastify({
   logger: true,
@@ -29,11 +28,10 @@ const server = Fastify({
 server.register(cors, {
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
 });
 
+server.register(fastifyMultipart);
 connectDB();
-
 server.register(tableRoutes);
 
 server.listen({ port: Number(PORT) }, (err, address) => {
