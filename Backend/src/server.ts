@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/db";
 import tableRoutes from "./routes/routes";
 import fastifyMultipart from "@fastify/multipart";
+import fastifyCookie from "@fastify/cookie";
+import fastifyJwt from "@fastify/jwt";
 import cors from "@fastify/cors";
 import { Table } from "./models/tableModel";
 import { Order } from "./models/orderModel";
@@ -26,8 +28,18 @@ const server = Fastify({
 });
 
 server.register(cors, {
-  origin: "*",
+  origin: process.env.FRONTEND_URI,
   methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+});
+
+server.register(fastifyCookie);
+server.register(fastifyJwt, {
+  secret: "my_jwt_secret",
+  cookie: {
+    cookieName: "accessToken",
+    signed: false,
+  },
 });
 
 server.register(fastifyMultipart);

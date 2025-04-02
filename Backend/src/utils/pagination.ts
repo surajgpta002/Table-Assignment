@@ -11,6 +11,7 @@ export const paginateWithAggregation = async <T>(
   model: Model<T>,
   queryParams: { page?: string; limit?: string },
   initialPipeline: any[] = [],
+
   lightCountQuery?: any
 ): Promise<PaginationResult<T>> => {
   const page = queryParams.page ? parseInt(queryParams.page) : 1;

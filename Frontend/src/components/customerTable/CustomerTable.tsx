@@ -12,6 +12,7 @@ import ShowFilter from "./ShowFilter";
 import SearchBar from "./SearchBar";
 import ExportButtons from "./ExportButtons";
 import FileUpload from "./FileUpload";
+import { Link } from "react-router-dom";
 
 const limit = import.meta.env.VITE_LIMIT_PER_PAGES;
 
@@ -106,17 +107,28 @@ const CustomerTable = ({
 
   return (
     <div className="container">
-      <ExportButtons
-        filters={filters}
-        pageIndex={pageIndex + 1}
-        limit={limit}
-      />
+      <div>
+        <div className="profile-signup">
+          <button className="profile-button">
+            <Link to={"/profile"}>Profile</Link>
+          </button>
+          <button className="signup-button">
+            <Link to={"/signup"}>Signup</Link>
+          </button>
+        </div>
 
-      <FileUpload />
+        <ExportButtons
+          filters={filters}
+          pageIndex={pageIndex + 1}
+          limit={limit}
+        />
 
-      <ShowFilter setShowFilters={setShowFilters} showFilters={showFilters} />
+        <FileUpload />
 
-      <SearchBar handleSearchChange={handleSearchChange} />
+        <ShowFilter setShowFilters={setShowFilters} showFilters={showFilters} />
+
+        <SearchBar handleSearchChange={handleSearchChange} />
+      </div>
 
       <GenericTable
         handleFilterChange={handleFilterChange}

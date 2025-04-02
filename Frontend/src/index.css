@@ -141,7 +141,7 @@
 .searchbar {
   display: flex;
   justify-content: center;
-  margin: 1rem 0;
+  margin-bottom: 1rem 0;
 }
 
 .searchbar input {
@@ -309,4 +309,187 @@
   font-size: 16px;
   font-weight: bold;
   color: #333;
+}
+
+#signup {
+  background-color: #f9f9f9;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  margin: 50px auto;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+#signup h1 {
+  text-align: center;
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+#signup form {
+  display: flex;
+  flex-direction: column;
+}
+
+#signup label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+#signup input {
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+#signup input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+#signup button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#signup button:hover {
+  background-color: #0056b3;
+}
+
+#signup button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+#logout {
+  background-color: #fb3c11;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#logout:hover {
+  background-color: #ed8565;
+}
+
+#logout:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.profile-signup {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+}
+
+.profile-button {
+  background-color: #1845e9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.signup-button {
+  background-color: #e91616;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.profile-button:hover {
+  background-color: #5558e7;
+}
+
+.signup-button:hover {
+  background-color: #ef5937;
+}
+
+.profile-button a,
+.signup-button a {
+  color: white;
+  text-decoration: none;
+}
+
+.profile-button:active {
+  background-color: #1e7e34;
+}
+
+.signup-button:active {
+  background-color: #c69500;
+}
+
+.profile-signup button {
+  outline: none;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  background-color: #f9f9f9;
+  font-family: "Segoe UI", sans-serif;
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+h1:nth-child(2) {
+  color: brown;
+}
+
+h1:nth-child(3) {
+  color: blue;
+}
+
+p {
+  color: #666;
+  font-size: 1.2rem;
+}
+
+button#logout {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button#logout:hover {
+  background-color: #0056b3;
 }

@@ -22,7 +22,9 @@ export const FetchDataCustomer = async (
     ...formattedFilters,
   });
 
-  const response = await axios.get(`${apiUrl}?${queryParams.toString()}`);
+  const response = await axios.get(`${apiUrl}?${queryParams.toString()}`, {
+    withCredentials: true,
+  });
 
   const formattedData = response.data.data.map((item: any) => ({
     ...item,

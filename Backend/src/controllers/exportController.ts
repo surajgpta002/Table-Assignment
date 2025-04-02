@@ -34,8 +34,10 @@ export const exportData = async (
       "Content-Type":
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "Content-Disposition": `attachment; filename="${filename}"`,
-      "Access-control-allow-origin": "*",
+      "Access-Control-Allow-Origin": process.env.FRONTEND_URI,
+      "Access-Control-Allow-Credentials": "true",
     });
+
     const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
       stream: reply.raw,
     });

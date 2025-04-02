@@ -9,6 +9,14 @@ import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { insertBulkOrdersData } from "../controllers/orderController";
 import { exportData } from "../controllers/exportController";
 import { uploadExcelData } from "../controllers/importContoller";
+import {
+  login,
+  logout,
+  refreshToken,
+  signup,
+} from "../controllers/authController";
+import { getProfile } from "../controllers/profileController";
+import { authenticate } from "../middleware/auth.middleware";
 
 const fastify = Fastify().withTypeProvider<TypeBoxTypeProvider>();
 
@@ -16,6 +24,7 @@ async function tableRoutes(fastify: FastifyInstance) {
   fastify.route({
     method: "GET",
     url: "/tables",
+    preHandler: authenticate,
     schema: {
       querystring: GetTablesDataQuerySchema,
     },
@@ -43,6 +52,36 @@ async function tableRoutes(fastify: FastifyInstance) {
     method: "POST",
     url: "/import",
     handler: uploadExcelData,
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/signup",
+    handler: signup,
+  });
+  fastify.route({
+    method: "POST",
+    url: "/login",
+    handler: login,
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/logout",
+    handler: logout,
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/refresh-token",
+    handler: refreshToken,
+  });
+
+  fastify.route({
+    method: "GET",
+    url: "/profile",
+    preHandler: authenticate,
+    handler: getProfile,
   });
 }
 
