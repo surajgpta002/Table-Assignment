@@ -5,7 +5,6 @@ interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string;
   readonly VITE_NO_OF_PAGES: number;
   readonly VITE_LIMIT_PER_PAGES: number;
-  readonly VITE_GOOGLE_CLIENT_ID: string;
 }
 
 interface ImportMeta {
