@@ -23,7 +23,7 @@ syncDatabaseIndexes();
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 
-const server = Fastify({
+const server: any = Fastify({
   logger: true,
 });
 
@@ -35,18 +35,18 @@ server.register(cors, {
 
 server.register(fastifyCookie);
 server.register(fastifyJwt, {
-  secret: "my_jwt_secret",
+  secret: process.env.JWT_SECRET,
   cookie: {
     cookieName: "accessToken",
     signed: false,
   },
 });
-
 server.register(fastifyMultipart);
-connectDB();
 server.register(tableRoutes);
 
-server.listen({ port: Number(PORT) }, (err, address) => {
+connectDB();
+
+server.listen({ port: Number(PORT) }, (err: any, address: any) => {
   if (err) {
     console.error(err);
     process.exit(1);

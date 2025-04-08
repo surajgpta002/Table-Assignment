@@ -1,7 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 import api from "./api/api";
+import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 interface SignUpPayload {
   name: string;
@@ -26,7 +29,7 @@ const SignUp = () => {
     mutationFn: signUpUser,
     onSuccess: (data) => {
       console.log("Signup Successful", data);
-      navigate("/profile");
+      navigate("/");
     },
     onError: (error: any) => {
       console.error("Signup Failed", error);
@@ -36,6 +39,25 @@ const SignUp = () => {
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutation.mutate({ name, email, password });
+  };
+
+  const handleSuccess = async (response: any) => {
+    console.log(response.credential);
+
+    if (!response.credential) {
+      console.error("Google OAuth failed: No token received");
+      return;
+    }
+    const token = response.credential;
+    console.log(token);
+
+    await axios.post(
+      `${apiUrl}/auth/google`,
+      { token },
+      { withCredentials: true }
+    );
+
+    navigate("/");
   };
 
   return (
@@ -78,6 +100,10 @@ const SignUp = () => {
         {mutation.isError && (
           <p style={{ color: "red" }}>{mutation.error.response.data.error}</p>
         )}
+
+        <div id="google-login">
+          <GoogleLogin onSuccess={handleSuccess} />
+        </div>
       </form>
     </div>
   );

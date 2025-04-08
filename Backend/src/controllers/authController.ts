@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import User from "../models/userModel";
-import { generateTokens } from "../utils/tokenUtils";
+import { generateTokens } from "../utils/generateTokens";
 
 // Signup
 export const signup = async (request: FastifyRequest, reply: FastifyReply) => {
@@ -30,7 +30,8 @@ export const login = async (request: FastifyRequest, reply: FastifyReply) => {
   };
 
   const user: any = await User.findOne({ email });
-  if (!user || !(await user.comparePassword(password))) {
+
+  if (!user || !user.password || !(await user.comparePassword(password))) {
     return reply.status(400).send({ error: "Invalid credentials" });
   }
 
@@ -41,7 +42,7 @@ export const login = async (request: FastifyRequest, reply: FastifyReply) => {
 
 // Logout
 export const logout = async (_request: FastifyRequest, reply: FastifyReply) => {
-  reply.clearCookie("accessToken");
+  reply.clearCookie("token");
   reply.clearCookie("refreshToken");
   return reply.send({ message: "Logout successful" });
 };
@@ -61,10 +62,10 @@ export const refreshToken = async (
 
     const newAccessToken = await reply.jwtSign(
       { id: decoded.id },
-      { expiresIn: "1m" }
+      { expiresIn: "15m" }
     );
 
-    reply.setCookie("accessToken", newAccessToken, {
+    reply.setCookie("token", newAccessToken, {
       httpOnly: true,
       secure: false,
       sameSite: "strict",

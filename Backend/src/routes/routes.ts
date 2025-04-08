@@ -16,7 +16,8 @@ import {
   signup,
 } from "../controllers/authController";
 import { getProfile } from "../controllers/profileController";
-import { authenticate } from "../middleware/auth.middleware";
+import { authenticate } from "../middleware/authMiddleware";
+import { googleLogin } from "../controllers/googleLogin";
 
 const fastify = Fastify().withTypeProvider<TypeBoxTypeProvider>();
 
@@ -82,6 +83,12 @@ async function tableRoutes(fastify: FastifyInstance) {
     url: "/profile",
     preHandler: authenticate,
     handler: getProfile,
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/auth/google",
+    handler: googleLogin,
   });
 }
 

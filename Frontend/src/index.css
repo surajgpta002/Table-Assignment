@@ -493,3 +493,12 @@ button#logout {
 button#logout:hover {
   background-color: #0056b3;
 }
+
+#loader {
+  display: flex;
+  justify-content: center;
+}
+
+#google-login {
+  margin-top: 20px;
+}
