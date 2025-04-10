@@ -4,6 +4,8 @@ import SignUp from "./components/authComponent/SignUp";
 import Tables from "./components/Tables";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/authComponent/ProtectedRoute";
+import ForgetPassword from "./components/authComponent/ForgetPassword";
+import ResetPassword from "./components/authComponent/ResetPassword";
 
 function App() {
   return (
@@ -30,6 +32,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </Router>
     </>

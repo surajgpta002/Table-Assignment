@@ -18,6 +18,7 @@ import {
 import { getProfile } from "../controllers/profileController";
 import { authenticate } from "../middleware/authMiddleware";
 import { googleLogin } from "../controllers/googleLogin";
+import { forgotPassword, resetPassword } from "../controllers/forgetPassword";
 
 const fastify = Fastify().withTypeProvider<TypeBoxTypeProvider>();
 
@@ -89,6 +90,16 @@ async function tableRoutes(fastify: FastifyInstance) {
     method: "POST",
     url: "/auth/google",
     handler: googleLogin,
+  });
+  fastify.route({
+    method: "POST",
+    url: "/forgot-password",
+    handler: forgotPassword,
+  });
+  fastify.route({
+    method: "POST",
+    url: "/reset-password/:token",
+    handler: resetPassword,
   });
 }
 

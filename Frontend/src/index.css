@@ -502,3 +502,121 @@ button#logout:hover {
 #google-login {
   margin-top: 20px;
 }
+
+.reset-password {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.reset-password h1 {
+  font-size: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #333;
+}
+
+.reset-password label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+}
+
+.reset-password input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 24px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.reset-password input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.reset-password button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reset-password button:hover {
+  background-color: #357ab8;
+}
+
+.forget-password {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.forget-password h1 {
+  font-size: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #333;
+}
+
+.forget-password label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+}
+
+.forget-password input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 24px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.forget-password input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.forget-password button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.forget-password button:hover {
+  background-color: #357ab8;
+}
+
+#forget-pass {
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px 10px 0px 10px;
+
+  font-size: 18px;
+}

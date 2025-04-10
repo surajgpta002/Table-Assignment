@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "./api/api";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { Link } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 interface LoginPayload {
@@ -87,6 +88,9 @@ const Login = () => {
           </p>
         )}
 
+        <div id="forget-pass">
+          <Link to="/forget-password">Forget Password</Link>
+        </div>
         <div id="google-login">
           <GoogleLogin onSuccess={handleSuccess} />
         </div>
